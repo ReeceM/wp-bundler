@@ -1,0 +1,5 @@
+# This is the configuration file
+#  rename to config.toml
+[bundler]
+ignore_file = '.distignore'
+source_dir = 'dist'

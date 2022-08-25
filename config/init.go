@@ -7,14 +7,14 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-// type certsConfig struct {
-// 	CrtFile string `toml:"crt_file"`
-// 	KeyFile string `toml:"key_file"`
-// }
+type bundler struct {
+	IgnoreFile string `toml:"ignore_file"`
+	SourceDir  string `toml:"source_dir"`
+}
 
 type TomlConfig struct {
-	APIAddr    string `toml:"api_addr"`
-	IgnoreFile string `toml:"ignore_file"`
+	APIAddr string  `toml:"api_addr"`
+	Bundler bundler `toml:"bundler"`
 }
 
 var (
@@ -31,7 +31,7 @@ func loadConfig() {
 
 func Init() {
 	// Path to config file can be passed in.
-	flag.StringVar(&configPath, "config", "config.dev.toml", "Path to config file")
+	flag.StringVar(&configPath, "config", "config.toml", "Path to config file")
 	flag.Parse()
 
 	loadConfig()

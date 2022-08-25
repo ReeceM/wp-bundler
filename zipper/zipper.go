@@ -20,7 +20,7 @@ type Zipper struct {
 // Write a file set
 func (m *Zipper) Write(dir string) {
 
-	ignores, err := readLines(_config.IgnoreFile)
+	ignores, err := readLines(_config.Bundler.IgnoreFile)
 	if err != nil {
 		panic(err)
 	}
