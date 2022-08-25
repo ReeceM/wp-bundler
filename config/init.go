@@ -12,13 +12,13 @@ import (
 // 	KeyFile string `toml:"key_file"`
 // }
 
-type tomlConfig struct {
+type TomlConfig struct {
 	APIAddr    string `toml:"api_addr"`
 	IgnoreFile string `toml:"ignore_file"`
 }
 
 var (
-	Config     tomlConfig
+	Config     TomlConfig
 	configPath string
 )
 
