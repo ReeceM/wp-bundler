@@ -2,28 +2,44 @@ package zipper
 
 import (
 	"archive/zip"
+	"bufio"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"wp-bundler/config"
 )
 
 type Zipper struct {
 	Writer     zip.Writer
 	Archive    os.File
-	ignoreList []string
+	IgnoreList []string
+	Close      func()
 }
 
 // Write a file set
 func (m *Zipper) Write(dir string) {
 
+	ignores, err := readLines(_config.IgnoreFile)
+	if err != nil {
+		panic(err)
+	}
+
 	walker := func(path string, info os.FileInfo, err error) error {
 		fmt.Printf("Crawling: %#v\n", path)
 		if err != nil {
+			fmt.Println("is err", err)
 			return err
 		}
 
+		if stringInSlice(info.Name(), ignores) {
+			fmt.Printf("Ignoring: %#v\n", info.Name())
+
+			return nil
+		}
+
 		if info.IsDir() {
+			fmt.Println("is dir")
 			return nil
 		}
 
@@ -51,16 +67,11 @@ func (m *Zipper) Write(dir string) {
 		return nil
 	}
 
-	err := filepath.Walk("dist", walker)
+	err = filepath.Walk(dir, walker)
 
 	if err != nil {
 		panic(err)
 	}
-}
-
-func (m Zipper) CloseAll() {
-	m.Writer.Close()
-	m.Archive.Close()
 }
 
 func (m *Zipper) create() {
@@ -71,14 +82,48 @@ func (m *Zipper) create() {
 	if err != nil {
 		panic(err)
 	}
-	defer archive.Close()
 
 	m.Writer = *zip.NewWriter(archive)
-	defer m.Writer.Close()
+
+	m.Close = func() {
+		fmt.Println("Closed archive")
+		m.Writer.Close()
+		m.Archive.Close()
+	}
 }
 
 var ZipWriter Zipper
+var _config config.TomlConfig
 
-func Init() {
+func Init(config config.TomlConfig) {
 	ZipWriter.create()
+	_config = config
+}
+
+// readLines reads a whole file into memory
+// and returns a slice of its lines.
+// https://stackoverflow.com/a/18479916/3778963
+func readLines(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
+// https://stackoverflow.com/a/15323988/3778963
+func stringInSlice(needle string, list []string) bool {
+	for _, b := range list {
+		if b == needle {
+			return true
+		}
+	}
+	return false
 }
