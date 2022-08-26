@@ -1,20 +1,19 @@
 package config
 
 import (
-	"flag"
 	"log"
 
 	"github.com/BurntSushi/toml"
 )
 
 type bundler struct {
-	IgnoreFile string `toml:"ignore_file"`
-	SourceDir  string `toml:"source_dir"`
+	IgnoreFile string `toml:"ignore_file"` // the .distignore file that should be used
+	SourceDir  string `toml:"source_dir"`  // the input directory that has the plugin
 }
 
 type TomlConfig struct {
-	APIAddr string  `toml:"api_addr"`
-	Bundler bundler `toml:"bundler"`
+	Name    string  `toml:"name"`    // this is the plugin / theme name
+	Bundler bundler `toml:"bundler"` // the bundler options
 	Verbose bool
 }
 
@@ -23,6 +22,11 @@ var (
 	configPath string
 )
 
+type ConfigOptions struct {
+	ConfigPath string
+	Verbose    bool
+}
+
 func loadConfig() {
 
 	if _, err := toml.DecodeFile(configPath, &Config); err != nil {
@@ -30,12 +34,11 @@ func loadConfig() {
 	}
 }
 
-func Init() {
+func Init(options ConfigOptions) {
 	// Path to config file can be passed in.
-	flag.StringVar(&configPath, "config", "config.toml", "Path to config file")
-	Config.Verbose = *flag.Bool("vv", false, "Get Verbose")
 
-	flag.Parse()
+	configPath = options.ConfigPath
+	Config.Verbose = options.Verbose
 
 	loadConfig()
 }

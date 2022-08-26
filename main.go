@@ -1,13 +1,28 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"wp-bundler/config"
 	"wp-bundler/zipper"
 )
 
+var (
+	configPath string
+	verbose    bool
+)
+
 func main() {
-	config.Init()
+	flag.StringVar(&configPath, "config", "config.toml", "Path to config file")
+	flag.BoolVar(&verbose, "vv", false, "Get Verbose")
+
+	flag.Parse()
+
+	config.Init(config.ConfigOptions{
+		ConfigPath: configPath,
+		Verbose:    verbose,
+	})
+
 	zipper.Init(config.Config)
 
 	log.Println("Application is using source dir:", config.Config.Bundler.SourceDir)

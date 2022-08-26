@@ -63,6 +63,7 @@ func (m *Zipper) Write(dir string) {
 		// This snippet happens to work because I don't use
 		// absolute paths, but ensure your real-world code
 		// transforms path into a zip-root relative path.
+		// f, err := m.Writer.Create(fmt.Sprintf("%s/%s", config.Config.Name, path))
 		f, err := m.Writer.Create(path)
 		if err != nil {
 			return err
@@ -86,7 +87,7 @@ func (m *Zipper) Write(dir string) {
 
 func (m *Zipper) create() {
 	fmt.Println("Opening archive")
-	archive, err := os.Create("archive.zip")
+	archive, err := os.Create(fmt.Sprintf("%s.zip", config.Config.Name))
 	m.Archive = *archive
 
 	if err != nil {
