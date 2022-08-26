@@ -1,5 +1,10 @@
 # This is the configuration file
 #  rename to config.toml
+
+# this is the archive files name, it should not have .zip
+name = 'wp-bundler'
+
+# bundler options.
 [bundler]
 ignore_file = '.distignore'
 source_dir = 'dist'
