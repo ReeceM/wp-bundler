@@ -16,6 +16,7 @@ vendor/
 
 config.dev.toml
 config.production.toml
+config.test.toml
 config.toml
 dist
 *.zip
