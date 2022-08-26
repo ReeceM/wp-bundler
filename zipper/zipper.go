@@ -27,21 +27,25 @@ func (m *Zipper) Write(dir string) {
 	}
 
 	walker := func(path string, info os.FileInfo, err error) error {
-		fmt.Printf("Crawling: %#v\n", path)
-		fmt.Println("name", info.Name())
-
+		if Verbose {
+			fmt.Printf("Crawling: %#v\n", path)
+		}
 		if err != nil {
 			fmt.Println(err)
 			return err
 		}
 
 		if stringInSlice(info.Name(), ignores) {
-			fmt.Printf("Ignoring: %#v\n", path)
+			if Verbose {
+				fmt.Printf("Ignoring: %#v\n", path)
+			}
 			return nil
 		}
 
 		if stringInSlice(path, ignores) {
-			fmt.Printf("Ignoring: %#v\n", path)
+			if Verbose {
+				fmt.Printf("Ignoring: %#v\n", path)
+			}
 			return nil
 		}
 
@@ -92,7 +96,6 @@ func (m *Zipper) create() {
 	m.Writer = *zip.NewWriter(archive)
 
 	m.Close = func() {
-		fmt.Println("Closed archive")
 		m.Writer.Close()
 		m.Archive.Close()
 	}
@@ -100,10 +103,13 @@ func (m *Zipper) create() {
 
 var ZipWriter Zipper
 var _config config.TomlConfig
+var Verbose bool
 
-func Init(config config.TomlConfig) {
+func Init(_conf config.TomlConfig) {
 	ZipWriter.create()
-	_config = config
+	_config = _conf
+	Verbose = _conf.Verbose
+	fmt.Println(Verbose)
 }
 
 // readLines reads a whole file into memory

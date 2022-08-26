@@ -8,11 +8,11 @@ import (
 
 func main() {
 	config.Init()
+	zipper.Init(config.Config)
 
 	log.Println("Application is using source dir:", config.Config.Bundler.SourceDir)
 	log.Println("Application is using ignore file:", config.Config.Bundler.IgnoreFile)
 
-	zipper.Init(config.Config)
 	zipper.ZipWriter.Write(config.Config.Bundler.SourceDir)
 	zipper.ZipWriter.Close()
 }

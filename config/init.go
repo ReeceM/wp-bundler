@@ -15,6 +15,7 @@ type bundler struct {
 type TomlConfig struct {
 	APIAddr string  `toml:"api_addr"`
 	Bundler bundler `toml:"bundler"`
+	Verbose bool
 }
 
 var (
@@ -32,6 +33,8 @@ func loadConfig() {
 func Init() {
 	// Path to config file can be passed in.
 	flag.StringVar(&configPath, "config", "config.toml", "Path to config file")
+	Config.Verbose = *flag.Bool("vv", false, "Get Verbose")
+
 	flag.Parse()
 
 	loadConfig()

@@ -1,3 +1,4 @@
 .github
 .DS_Store
 .git
+node_modules
