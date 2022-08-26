@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"wp-bundler/config"
 )
 
@@ -27,19 +28,24 @@ func (m *Zipper) Write(dir string) {
 
 	walker := func(path string, info os.FileInfo, err error) error {
 		fmt.Printf("Crawling: %#v\n", path)
+		fmt.Println("name", info.Name())
+
 		if err != nil {
-			fmt.Println("is err", err)
+			fmt.Println(err)
 			return err
 		}
 
 		if stringInSlice(info.Name(), ignores) {
-			fmt.Printf("Ignoring: %#v\n", info.Name())
+			fmt.Printf("Ignoring: %#v\n", path)
+			return nil
+		}
 
+		if stringInSlice(path, ignores) {
+			fmt.Printf("Ignoring: %#v\n", path)
 			return nil
 		}
 
 		if info.IsDir() {
-			fmt.Println("is dir")
 			return nil
 		}
 
@@ -122,6 +128,16 @@ func readLines(path string) ([]string, error) {
 func stringInSlice(needle string, list []string) bool {
 	for _, b := range list {
 		if b == needle {
+			return true
+		}
+
+		result, err := regexp.MatchString(fmt.Sprintf(`%s`, b), needle)
+
+		if err != nil {
+			return false
+		}
+
+		if result {
 			return true
 		}
 	}
