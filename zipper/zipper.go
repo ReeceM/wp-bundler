@@ -22,6 +22,11 @@ type Zipper struct {
 func (m *Zipper) Write(dir string) {
 
 	ignores, err := readLines(_config.Bundler.IgnoreFile)
+
+	if Verbose {
+		fmt.Println(ignores)
+	}
+
 	if err != nil {
 		panic(err)
 	}
@@ -110,7 +115,9 @@ func Init(_conf config.TomlConfig) {
 	ZipWriter.create()
 	_config = _conf
 	Verbose = _conf.Verbose
-	fmt.Println(Verbose)
+	if Verbose {
+		fmt.Println("Verbose output enabled")
+	}
 }
 
 // readLines reads a whole file into memory
@@ -138,6 +145,7 @@ func stringInSlice(needle string, list []string) bool {
 			return true
 		}
 
+		// @todo this is picking up single letters if it's a `b` value
 		result, err := regexp.MatchString(fmt.Sprintf(`%s`, b), needle)
 
 		if err != nil {

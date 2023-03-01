@@ -1,26 +1,29 @@
-// package zipper
+package zipper
 
-// import (
-// 	"regexp"
-// 	"testing"
-// )
+import (
+	"testing"
+)
 
-// // TestHelloName calls greetings.Hello with a name, checking
-// // for a valid return value.
-// func TestHelloName(t *testing.T) {
-// 	name := "Gladys"
-// 	want := regexp.MustCompile(`\b` + name + `\b`)
-// 	msg, err := Hello("Gladys")
-// 	if !want.MatchString(msg) || err != nil {
-// 		t.Fatalf(`Hello("Gladys") = %q, %v, want match for %#q, nil`, msg, err, want)
-// 	}
-// }
+func TestStringInSliceHasTrue(t *testing.T) {
+	needle := "Hey-stack"
+	want := true
+	var haystack []string
+	haystack = append(haystack, "a", "b", "Hey-stack")
+	result := stringInSlice(needle, haystack)
 
-// // TestHelloEmpty calls greetings.Hello with an empty string,
-// // checking for an error.
-// func TestHelloEmpty(t *testing.T) {
-// 	msg, err := Hello("")
-// 	if msg != "" || err == nil {
-// 		t.Fatalf(`Hello("") = %q, %v, want "", error`, msg, err)
+	if result != want {
+		t.Fatal()
+	}
+}
+
+// func TestStringInSliceHasFalse(t *testing.T) {
+// 	needle := "Hey-not-stack"
+// 	want := false
+// 	var haystack []string
+// 	haystack = append(haystack, "a", "b", "hey", "Hey-stack")
+// 	result := stringInSlice(needle, haystack)
+
+// 	if result != want {
+// 		t.Fatal()
 // 	}
 // }
