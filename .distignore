@@ -2,3 +2,5 @@
 .DS_Store
 .git
 node_modules
+.distignore
+config.toml

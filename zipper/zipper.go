@@ -5,9 +5,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"wp-bundler/config"
 )
 
@@ -92,7 +94,10 @@ func (m *Zipper) Write(dir string) {
 
 func (m *Zipper) create() {
 	fmt.Println("Opening archive")
-	archive, err := os.Create(fmt.Sprintf("%s.zip", config.Config.Name))
+
+	ver := version(config.Config.Bundler.SourceDir + "/readme.txt")
+
+	archive, err := os.Create(fmt.Sprintf("%s-%v.zip", config.Config.Name, ver))
 	m.Archive = *archive
 
 	if err != nil {
@@ -157,4 +162,32 @@ func stringInSlice(needle string, list []string) bool {
 		}
 	}
 	return false
+}
+
+func version(directory string) string {
+	file, err := os.Open(directory)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		result, _ := regexp.MatchString("Stable tag:.*", scanner.Text())
+
+		if result == true {
+			// return the stable tag
+			return strings.Replace(strings.Split(scanner.Text(), ":")[1], " ", "", 1)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Panicln(err)
+		return "v0.0.0"
+	}
+
+	return "v0.0.0"
 }
