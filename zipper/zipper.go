@@ -24,7 +24,7 @@ func (m *Zipper) Write(dir string) {
 	ignores, err := readLines(_config.Bundler.IgnoreFile)
 
 	if Verbose {
-		fmt.Println(ignores)
+		fmt.Println(fmt.Sprintf("Ignore Files %v", ignores))
 	}
 
 	if err != nil {

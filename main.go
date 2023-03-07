@@ -10,17 +10,20 @@ import (
 var (
 	configPath string
 	verbose    bool
+	source_dir string
 )
 
 func main() {
 	flag.StringVar(&configPath, "config", "config.toml", "Path to config file")
 	flag.BoolVar(&verbose, "vv", false, "Get Verbose")
+	flag.StringVar(&source_dir, "source", "dist", "Provide the source directory, will be searched for config.toml")
 
 	flag.Parse()
 
 	config.Init(config.ConfigOptions{
 		ConfigPath: configPath,
 		Verbose:    verbose,
+		SourceDir:  source_dir,
 	})
 
 	zipper.Init(config.Config)

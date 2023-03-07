@@ -20,17 +20,21 @@ type TomlConfig struct {
 var (
 	Config     TomlConfig
 	configPath string
+	source_dir string
 )
 
 type ConfigOptions struct {
 	ConfigPath string
+	SourceDir  string
 	Verbose    bool
 }
 
 func loadConfig() {
 
 	if _, err := toml.DecodeFile(configPath, &Config); err != nil {
-		log.Fatalln("Reading config failed", err)
+		if _, err := toml.DecodeFile(source_dir+"/config.toml", &Config); err != nil {
+			log.Fatalln("Reading config failed", err)
+		}
 	}
 }
 
@@ -39,6 +43,8 @@ func Init(options ConfigOptions) {
 
 	configPath = options.ConfigPath
 	Config.Verbose = options.Verbose
+
+	source_dir = options.SourceDir
 
 	loadConfig()
 }
