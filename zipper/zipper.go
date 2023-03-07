@@ -179,8 +179,10 @@ func version(directory string) string {
 		result, _ := regexp.MatchString("Stable tag:.*", scanner.Text())
 
 		if result == true {
+			value := strings.Replace(strings.Split(scanner.Text(), ":")[1], " ", "", 1)
+			log.Println(fmt.Sprintf("using %v", value))
 			// return the stable tag
-			return strings.Replace(strings.Split(scanner.Text(), ":")[1], " ", "", 1)
+			return value
 		}
 	}
 
